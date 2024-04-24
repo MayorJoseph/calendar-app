@@ -16,8 +16,9 @@ interface Event {
   title: string;
   start: Date | string;
   allDay: boolean;
-  id: number;
+  id: string; // Change the type of id to string
 }
+
 
 export default function Home() {
   const [events, setEvents] = useState([
@@ -30,14 +31,14 @@ export default function Home() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState<number | null>(null);
+  const [idToDelete, setIdToDelete] = useState<string | null>(null);
   const [newEvent, setNewEvent] = useState<Event>({
     title: "",
     start: "",
     allDay: false,
-    id: 0,
+    id: "", // Change from 0 to ""
   });
-
+  
   useEffect(() => {
     let draggableEl = document.getElementById("draggable-el");
     if (draggableEl) {
@@ -58,10 +59,11 @@ export default function Home() {
       ...newEvent,
       start: arg.date,
       allDay: arg.allDay,
-      id: new Date().getTime(),
+      id: String(new Date().getTime()), // Generate a unique string identifier
     });
     setShowModal(true);
   }
+  
 
   function addEvent(data: DropArg) {
     const event = {
@@ -69,15 +71,16 @@ export default function Home() {
       start: data.date.toISOString(),
       title: data.draggedEl.innerText,
       allDay: data.allDay,
-      id: new Date().getTime(),
+      id: String(new Date().getTime()), // Convert id to string
     };
     setAllEvents([...allEvents, event]);
   }
 
   function handleDeleteModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
-    setIdToDelete(Number(data.event.id));
+    setIdToDelete(data.event.id); // Remove the Number conversion
   }
+  
 
   function handleDelete() {
     setAllEvents(
@@ -93,7 +96,7 @@ export default function Home() {
       title: "",
       start: "",
       allDay: false,
-      id: 0,
+      id: "",
     });
     setShowDeleteModal(false);
     setIdToDelete(null);
@@ -114,7 +117,7 @@ export default function Home() {
       title: "",
       start: "",
       allDay: false,
-      id: 0,
+      id: "",
     });
   }
 
